@@ -94,7 +94,7 @@ class ActivityGUI(gTableWidget, QObject):
             self.active_row = row
 
         # store if the activity was running or not before the stop signal is sent
-        running = self.activities[row].is_running
+        running = self.activities[self.active_row].is_running
 
         # If an activity is running, stop it.
         if running is True:
