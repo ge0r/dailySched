@@ -15,11 +15,11 @@ class Activity:
 
     def __init__(self, name, duration, days, period):
         self.name = name
-        self.duration = duration
+        self.duration = duration*60
         self.days = days
         self.period = period
 
-        self.time_left = duration
+        self.time_left = self.duration
         self.time_stamp = None
         self.is_running = False
 
@@ -51,11 +51,14 @@ class Activity:
     def stop_time_update(self):
         self.is_running = False
 
-    def return_minute_format(self):
-        minutes = (int(self.time_left / 60))
+    def return_hour_minute_format(self):
+        hours = int(self.time_left / 3600)
+        hours_string = str(hours)+"h " if hours != 0 else ""
+        minutes = int(self.time_left % 3600 / 60)
         minutes_string = str(minutes)+"min " if minutes != 0 else ""
-        seconds = str(self.time_left % 60)+"sec"
-        return minutes_string+seconds
+        seconds = int(self.time_left % 3600 % 60)
+        seconds_string = str(seconds)+"s " if seconds != 0 else ""
+        return hours_string+minutes_string+seconds_string
 
     def end(self):
         pass
