@@ -9,13 +9,13 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 
 class gTableWidget(object):
     def setupUi(self, q_dialog):
         q_dialog.setObjectName("DailySchedule")
-        q_dialog.resize(460, 300)
+        q_dialog.resize(700, 500)
         self.gridLayout = QtWidgets.QGridLayout(q_dialog)
         self.gridLayout.setSpacing(5)
         self.gridLayout.setContentsMargins(5, 5, 5, 5)
@@ -32,11 +32,13 @@ class gTableWidget(object):
         self.pushButton.setObjectName("pushButton")
         self.gridLayout.addWidget(self.pushButton, 2, 0, 1, 1)
 
+        self.a = 5
+
         self.retranslateUi(q_dialog)
         QtCore.QMetaObject.connectSlotsByName(q_dialog)
 
     def retranslateUi(self, q_dialog):
         _translate = QtCore.QCoreApplication.translate
-        q_dialog.setWindowTitle(_translate("DailySchedule", "Form"))
-        self.pushButton.setText(_translate("DailySchedule", "test"))
+        q_dialog.setWindowTitle(_translate("DailySchedule", "DayScheduler"))
+        self.pushButton.setText(_translate("DailySchedule", "Reset"))
 

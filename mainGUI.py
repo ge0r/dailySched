@@ -17,6 +17,7 @@ class ActivityGUI(gTableWidget, QObject):
     def __init__(self):
         # don't forget, needed for QObject signal
         super(ActivityGUI, self).__init__()
+
         self.ui = gTableWidget()
         self.activities = None
         self.thread = None
@@ -25,6 +26,7 @@ class ActivityGUI(gTableWidget, QObject):
 
         # decode audio file in memory, since sound is going to be played more than once
         self.song = pyglet.media.load("activity_completed.wav", streaming=False)
+
         self.play_alert = True
 
     def setup(self, daily_schedule):
@@ -41,7 +43,6 @@ class ActivityGUI(gTableWidget, QObject):
         self.thread.time_signal.connect(self.update_progressbar)
         self.stop_thread_signal.connect(self.thread.stop)
         # self.pushButton.clicked.connect(self.handle_click)
-        # self.tableWidget.cellChanged.connect(self.handle_change)
 
     def arrange_activities(self):
         count = 0
@@ -70,7 +71,21 @@ class ActivityGUI(gTableWidget, QObject):
             progressbar.setFormat(str(activity.return_hour_minute_format()))
             progressbar.setToolTip("duration: " + activity.return_hour_minute_format())
 
+            self.tableWidget.setRowHeight(count, 65)
+
             self.tableWidget.setCellWidget(count, 1, progressbar)
+
+            # # arrange row height according to initial duration
+            # if activity.duration <= 3600:
+            #     print("60")
+            #     self.tableWidget.setRowHeight(count, 30)
+            # elif activity.duration <= 7200:
+            #     print("120")
+            #     self.tableWidget.setRowHeight(count, 40)
+            # elif activity.duration <= 14400:
+            #     self.tableWidget.setRowHeight(count, 50)
+            # else:
+            #     self.tableWidget.setRowHeight(count, 60)
 
             count += 1
 
@@ -105,7 +120,9 @@ class ActivityGUI(gTableWidget, QObject):
         print(self.activities[self.active_row].name+" completed")
 
     def create_some_activities(self):
-        self.activities = [Activity("test", 0.05, 3, 3) ,Activity("mail", 0.1, 3, 3), Activity("cleaning", 10, 3, 3), Activity("write music", 30, 3, 3), Activity("coding", 120, 4, 5), Activity("study", 180, 1, 2)]
+        self.activities = [Activity("test", 0.05, 3, 3), Activity("mail", 0.1, 3, 3), Activity("cleaning", 10, 3, 3),
+                           Activity("write music", 600, 3, 3), Activity("coding", 120, 4, 5),
+                           Activity("study", 180, 1, 2)]
 
     # slots
     def update_progressbar(self):
