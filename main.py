@@ -12,6 +12,12 @@ QWidget
     color: #b1b1b1;
     background-color: #323232;
 }
+QHeaderView::section {
+    background-color: #323232;
+    padding: 4px;
+    border: 0px;
+    font-size: 9pt;
+}
 QProgressBar
 {
     border: 2px solid grey;
