@@ -1,7 +1,7 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QObject
 
-from PyQt5.QtWidgets import QTableWidgetItem, QProgressBar, QHeaderView
+from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
 
 from activity import Activity
 from uiModule import gTableWidget
@@ -65,8 +65,6 @@ class ActivityGUI(gTableWidget, QObject):
             progressbar.setFormat(str(activity.return_hour_minute_format()))
             progressbar.setToolTip("duration: " + activity.return_hour_minute_format())
 
-            # progressbar.change_color("yellow")
-
             self.tableWidget.setCellWidget(count, 1, progressbar)
 
             count += 1
@@ -76,7 +74,7 @@ class ActivityGUI(gTableWidget, QObject):
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
     def create_some_activities(self):
-        self.activities = [Activity("piano", 15, 3, 3), Activity("coding", 9000, 4, 5), Activity("study", 1, 1, 2)]
+        self.activities = [Activity("cleaning", 10, 3, 3), Activity("write music", 30, 3, 3), Activity("coding", 120, 4, 5), Activity("study", 180, 1, 2)]
 
     # slots
     def update_progressbar(self):
@@ -105,6 +103,7 @@ class ActivityGUI(gTableWidget, QObject):
         if running is True:
             self.stop_thread_signal.emit()
             self.activities[self.active_row].stop_time_update()
+            self.tableWidget.cellWidget(self.active_row, 1).change_color("#008000")
             print("stopping activity")
 
         # if the double clicked row is not the active row, or if it is, if the activity was not running, start it.
@@ -114,4 +113,5 @@ class ActivityGUI(gTableWidget, QObject):
             self.thread.wait()
             self.thread.start()
 
+            self.tableWidget.cellWidget(row, 1).change_color("#b34700")
             self.active_row = row
