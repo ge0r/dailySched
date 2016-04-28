@@ -5,7 +5,6 @@ import sys
 from uiModule import *
 from mainGUI import ActivityGUI
 
-
 styleData = """
 QWidget
 {
@@ -80,7 +79,6 @@ gui = ActivityGUI()
 gui.setup(DailySchedule)
 gui.create_some_activities()
 gui.arrange_activities()
-
 
 # show the window
 DailySchedule.show()

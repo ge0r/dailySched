@@ -22,6 +22,7 @@ class Activity:
         self.time_left = self.duration
         self.time_stamp = None
         self.is_running = False
+        self.ended = False
 
     # updates time left for the activity
     def update_time(self):
@@ -61,7 +62,8 @@ class Activity:
         return hours_string+minutes_string+seconds_string
 
     def end(self):
-        pass
+        self.is_running = False
+        self.ended = True
 
     def __str__(self):
         return "%s, %s, %s, %s" % (

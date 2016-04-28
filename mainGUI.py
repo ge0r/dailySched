@@ -1,7 +1,8 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QObject
-
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
+
+import pyglet
 
 from activity import Activity
 from uiModule import gTableWidget
@@ -21,6 +22,10 @@ class ActivityGUI(gTableWidget, QObject):
         self.thread = None
         self.active_row = None
         self.thread = ThreadClass()
+
+        # decode audio file in memory, since sound is going to be played more than once
+        self.song = pyglet.media.load("activity_completed.wav", streaming=False)
+        self.play_alert = True
 
     def setup(self, daily_schedule):
         self.setupUi(daily_schedule)
@@ -73,19 +78,52 @@ class ActivityGUI(gTableWidget, QObject):
         self.tableWidget.horizontalHeader().setStretchLastSection(True)
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
+    def start_activity(self, row):
+        # wait for thread to finish before starting
+        self.thread.wait()
+        self.thread.start()
+
+        self.tableWidget.cellWidget(row, 1).change_color("#b34700")
+        self.active_row = row
+        print("starting "+str(row))
+
+    def stop_activity(self):
+        self.stop_thread_signal.emit()
+        self.activities[self.active_row].stop_time_update()
+        self.tableWidget.cellWidget(self.active_row, 1).change_color("#008000")
+        print("stopping activity")
+
+    def end_activity(self):
+        # do the required actions to stop the progressbar activity
+        self.stop_thread_signal.emit()
+        self.tableWidget.cellWidget(self.active_row, 1).setFormat("Completed")
+
+        # if the user has selected it, play the alert
+        if self.play_alert is True:
+            self.song.play()
+
+        print(self.activities[self.active_row].name+" completed")
+
     def create_some_activities(self):
-        self.activities = [Activity("cleaning", 10, 3, 3), Activity("write music", 30, 3, 3), Activity("coding", 120, 4, 5), Activity("study", 180, 1, 2)]
+        self.activities = [Activity("test", 0.05, 3, 3) ,Activity("mail", 0.1, 3, 3), Activity("cleaning", 10, 3, 3), Activity("write music", 30, 3, 3), Activity("coding", 120, 4, 5), Activity("study", 180, 1, 2)]
 
     # slots
     def update_progressbar(self):
+
         row = self.active_row
 
-        # update activity time
-        self.activities[row].update_time()
-        time_left = self.activities[row].time_left
+        # if the activity has not ended keep updating the progressbar
+        if self.activities[row].ended is False:
+            # update activity time
+            self.activities[row].update_time()
+            time_left = self.activities[row].time_left
 
-        self.tableWidget.cellWidget(row, 1).setValue(time_left)
-        self.tableWidget.cellWidget(row, 1).setFormat(self.activities[row].return_hour_minute_format())
+            self.tableWidget.cellWidget(row, 1).setValue(time_left)
+            self.tableWidget.cellWidget(row, 1).setFormat(self.activities[row].return_hour_minute_format())
+
+        else:
+            # do required actions to end the activity
+            self.end_activity()
 
     def handle_cell_click(self, row, col):
         self.tableWidget.selectRow(row)
@@ -101,17 +139,10 @@ class ActivityGUI(gTableWidget, QObject):
 
         # If an activity is running, stop it.
         if running is True:
-            self.stop_thread_signal.emit()
-            self.activities[self.active_row].stop_time_update()
-            self.tableWidget.cellWidget(self.active_row, 1).change_color("#008000")
-            print("stopping activity")
+            self.stop_activity()
 
-        # if the double clicked row is not the active row, or if it is, if the activity was not running, start it.
+        # if the double clicked row is not the active row, or if the activity was not running, start it.
         if row != self.active_row or not running:
-
-            # wait for thread to finish before starting
-            self.thread.wait()
-            self.thread.start()
-
-            self.tableWidget.cellWidget(row, 1).change_color("#b34700")
-            self.active_row = row
+            # if the activity has not already ended start it
+            if not self.activities[row].ended:
+                self.start_activity(row)
