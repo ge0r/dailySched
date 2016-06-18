@@ -28,9 +28,9 @@ class gTableWidget(object):
         self.tableWidget.setRowCount(0)
         self.verticalLayout.addWidget(self.tableWidget)
         self.gridLayout.addLayout(self.verticalLayout, 1, 0, 1, 1)
-        self.pushButton = QtWidgets.QPushButton(q_dialog)
-        self.pushButton.setObjectName("pushButton")
-        self.gridLayout.addWidget(self.pushButton, 2, 0, 1, 1)
+        self.resetButton = QtWidgets.QPushButton(q_dialog)
+        self.resetButton.setObjectName("resetButton")
+        self.gridLayout.addWidget(self.resetButton, 2, 0, 1, 1)
 
         self.a = 5
 
@@ -40,5 +40,5 @@ class gTableWidget(object):
     def retranslateUi(self, q_dialog):
         _translate = QtCore.QCoreApplication.translate
         q_dialog.setWindowTitle(_translate("DailySchedule", "DayScheduler"))
-        self.pushButton.setText(_translate("DailySchedule", "Reset"))
+        self.resetButton.setText(_translate("DailySchedule", "Reset"))
 

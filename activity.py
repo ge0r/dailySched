@@ -1,5 +1,7 @@
 import time
 
+from pexpect import searcher_re
+
 
 class Activity:
     """Common base class for all activities.
@@ -15,10 +17,13 @@ class Activity:
 
     def __init__(self, name, duration, days, period):
         self.name = name
+
+        # duration is multiplied by 60 to get minutes
         self.duration = duration*60
         self.days = days
         self.period = period
 
+        # time left is initially the same as activity duration
         self.time_left = self.duration
         self.time_stamp = None
         self.is_running = False
@@ -42,7 +47,7 @@ class Activity:
         # time_stamp is renewed
         self.time_stamp = t
 
-        # if time_left is negative end the activity
+        # if time_left is negative, end the activity
         if self.time_left < 0:
             self.time_left = 0
             self.end()
@@ -64,6 +69,10 @@ class Activity:
     def end(self):
         self.is_running = False
         self.ended = True
+
+    def reset(self):
+        self.time_left = self.duration
+        self.ended = False
 
     def __str__(self):
         return "%s, %s, %s, %s" % (

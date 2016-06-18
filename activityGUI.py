@@ -20,13 +20,13 @@ class ActivityGUI(gTableWidget, QObject):
 
         self.ui = gTableWidget()
         self.activities = None
-        self.thread = None
         self.active_row = None
         self.thread = ThreadClass()
 
         # decode audio file in memory, since sound is going to be played more than once
         self.song = pyglet.media.load("activity_completed.wav", streaming=False)
 
+        # if True, plays the self.song alert when an activity is over
         self.play_alert = True
 
     def setup(self, daily_schedule):
@@ -42,7 +42,7 @@ class ActivityGUI(gTableWidget, QObject):
         self.tableWidget.cellDoubleClicked.connect(self.handle_cell_double_click)
         self.thread.time_signal.connect(self.update_progressbar)
         self.stop_thread_signal.connect(self.thread.stop)
-        # self.pushButton.clicked.connect(self.handle_click)
+        self.resetButton.clicked.connect(self.handle_reset_click)
 
     def arrange_activities(self):
         count = 0
@@ -75,23 +75,26 @@ class ActivityGUI(gTableWidget, QObject):
 
             self.tableWidget.setCellWidget(count, 1, progressbar)
 
-            # # arrange row height according to initial duration
-            # if activity.duration <= 3600:
-            #     print("60")
-            #     self.tableWidget.setRowHeight(count, 30)
-            # elif activity.duration <= 7200:
-            #     print("120")
-            #     self.tableWidget.setRowHeight(count, 40)
-            # elif activity.duration <= 14400:
-            #     self.tableWidget.setRowHeight(count, 50)
-            # else:
-            #     self.tableWidget.setRowHeight(count, 60)
+            self.thicken_activitybar(activity, count)
 
             count += 1
 
         # resize headers to fit
         self.tableWidget.horizontalHeader().setStretchLastSection(True)
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+
+    def thicken_activitybar(self, activity, count):
+        # arrange row height according to initial duration
+        if activity.duration <= 3600:
+            print("60")
+            self.tableWidget.setRowHeight(count, 65)
+        elif activity.duration <= 7200:
+            print("120")
+            self.tableWidget.setRowHeight(count, 80)
+        elif activity.duration <= 14400:
+            self.tableWidget.setRowHeight(count, 95)
+        else:
+            self.tableWidget.setRowHeight(count, 110)
 
     def start_activity(self, row):
         # wait for thread to finish before starting
@@ -120,9 +123,11 @@ class ActivityGUI(gTableWidget, QObject):
         print(self.activities[self.active_row].name+" completed")
 
     def create_some_activities(self):
-        self.activities = [Activity("test", 0.05, 3, 3), Activity("mail", 0.1, 3, 3), Activity("cleaning", 10, 3, 3),
-                           Activity("write music", 600, 3, 3), Activity("coding", 120, 4, 5),
-                           Activity("study", 180, 1, 2)]
+        self.activities = [Activity("music", 60, 3, 3), Activity("mail", 0.3, 3, 3), Activity("a", 0.1, 3, 3),
+                           Activity("b", 60, 3, 3), Activity("coding", 60, 4, 5), Activity("other", 60, 4, 5),
+                           Activity("study", 180, 1, 2), Activity("food1", 20, 4, 5), Activity("food2", 30, 4, 5),
+                           Activity("food3", 15, 4, 5), Activity("food4", 5, 4, 5), Activity("food5", 5, 4, 5),
+                           Activity("duolingo", 25, 3, 3), Activity("sailing", 20, 3, 3)]
 
     # slots
     def update_progressbar(self):
@@ -163,3 +168,18 @@ class ActivityGUI(gTableWidget, QObject):
             # if the activity has not already ended start it
             if not self.activities[row].ended:
                 self.start_activity(row)
+
+    def handle_reset_click(self):
+        print("reset button clicked")
+        row = 0
+        for activity in self.activities:
+            # reset each activity
+            activity.reset()
+
+            # repaint progressbar
+            self.tableWidget.cellWidget(row, 1).setValue(activity.time_left)
+            self.tableWidget.cellWidget(row, 1).setFormat(self.activities[row].return_hour_minute_format())
+
+            if not activity.is_running:
+                self.tableWidget.cellWidget(row, 1).change_color("#008000")
+            row += 1

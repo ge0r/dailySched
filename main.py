@@ -3,7 +3,7 @@
 import sys
 
 from uiModule import *
-from mainGUI import ActivityGUI
+from activityGUI import ActivityGUI
 
 styleData = """
 QWidget
