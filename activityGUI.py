@@ -190,12 +190,14 @@ class ActivityGUI(gTableWidget, QObject):
         with open('data.json', encoding='utf-8') as data_file:
             pickled = json.loads(data_file.read())
             unpickled = jsonpickle.loads(pickled)
-            print(unpickled.__dict__)
+
+        for activity in unpickled:
+            print(activity.__dict__)
 
     def obj_to_json(self):
-        for activity in self.activities:
-            pickled = jsonpickle.dumps(activity)
-            print(pickled)
+        # for activity in self.activities:
+        pickled = jsonpickle.dumps(self.activities)
+        print(pickled)
 
         with open('data.json', 'w') as fp:
             # json.dump(activity, fp, default=jdefault)
