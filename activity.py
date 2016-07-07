@@ -1,8 +1,5 @@
 import time
 
-from pexpect import searcher_re
-
-
 class Activity:
     """Common base class for all activities.
     An activity is considered to be anything you schedule to do.

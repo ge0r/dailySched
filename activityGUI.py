@@ -3,6 +3,8 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
 
 import pyglet
+import json
+import jsonpickle
 
 from activity import Activity
 from uiModule import gTableWidget
@@ -123,10 +125,9 @@ class ActivityGUI(gTableWidget, QObject):
         print(self.activities[self.active_row].name+" completed")
 
     def create_some_activities(self):
-        self.activities = [Activity("music", 60, 3, 3), Activity("mail", 0.3, 3, 3), Activity("a", 0.1, 3, 3),
+        self.activities = [Activity("music", 30, 3, 3), Activity("mail", 0.3, 3, 3), Activity("a", 0.1, 3, 3),
                            Activity("b", 60, 3, 3), Activity("coding", 60, 4, 5), Activity("other", 60, 4, 5),
                            Activity("study", 180, 1, 2), Activity("food1", 20, 4, 5), Activity("food2", 30, 4, 5),
-                           Activity("food3", 15, 4, 5), Activity("food4", 5, 4, 5), Activity("food5", 5, 4, 5),
                            Activity("duolingo", 25, 3, 3), Activity("sailing", 20, 3, 3)]
 
     # slots
@@ -172,14 +173,35 @@ class ActivityGUI(gTableWidget, QObject):
     def handle_reset_click(self):
         print("reset button clicked")
         row = 0
+        # for activity in self.activities:
+        #     # reset each activity
+        #     activity.reset()
+        #
+        #     # repaint progressbar
+        #     self.tableWidget.cellWidget(row, 1).setValue(activity.time_left)
+        #     self.tableWidget.cellWidget(row, 1).setFormat(self.activities[row].return_hour_minute_format())
+        #
+        #     if not activity.is_running:
+        #         self.tableWidget.cellWidget(row, 1).change_color("#008000")
+        #     row += 1
+
+        self.obj_to_json()
+
+        with open('data.json', encoding='utf-8') as data_file:
+            pickled = json.loads(data_file.read())
+            unpickled = jsonpickle.loads(pickled)
+            print(unpickled.__dict__)
+
+    def obj_to_json(self):
         for activity in self.activities:
-            # reset each activity
-            activity.reset()
+            pickled = jsonpickle.dumps(activity)
+            print(pickled)
 
-            # repaint progressbar
-            self.tableWidget.cellWidget(row, 1).setValue(activity.time_left)
-            self.tableWidget.cellWidget(row, 1).setFormat(self.activities[row].return_hour_minute_format())
+        with open('data.json', 'w') as fp:
+            # json.dump(activity, fp, default=jdefault)
+            json.dump(pickled, fp)
 
-            if not activity.is_running:
-                self.tableWidget.cellWidget(row, 1).change_color("#008000")
-            row += 1
+
+def jdefault(o):
+    return o.__dict__
+
