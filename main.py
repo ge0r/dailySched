@@ -2,7 +2,7 @@
 
 import sys
 
-from uiModule import *
+from pyQtUi import *
 from activityGUI import ActivityGUI
 
 styleData = """

@@ -7,11 +7,11 @@ import json
 import jsonpickle
 
 from activity import Activity
-from uiModule import gTableWidget
+from pyQtUi import Ui_q_dialog
 from tools import ThreadClass, MyProgressBar
 
 
-class ActivityGUI(gTableWidget, QObject):
+class ActivityGUI(Ui_q_dialog, QObject):
 
     # pyqtSignal as class variable
     stop_thread_signal = QtCore.pyqtSignal()
@@ -20,7 +20,7 @@ class ActivityGUI(gTableWidget, QObject):
         # don't forget, needed for QObject signal
         super(ActivityGUI, self).__init__()
 
-        self.ui = gTableWidget()
+        self.ui = Ui_q_dialog()
         self.activities = None
         self.active_row = None
         self.thread = ThreadClass()
