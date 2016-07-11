@@ -36,7 +36,7 @@ QTableView:item{
 }
 QTableView::item:selected
 {
-    color: #f5f5ef;
+    color: #e65c00;
     background: #323232;
 }
 QProgressBar
@@ -54,41 +54,41 @@ QProgressBar::chunk
     width: 2.15px;
     margin: 0.5px;
 }
- QScrollBar:vertical {
-     border: 2px solid grey;
-     background: #323232;
-     width: 15px;
-     margin: 22px 0 22px 0;
- }
- QScrollBar::handle:vertical {
-     background: #b1b1b1;
-     min-height: 3px;
- }
- QScrollBar::add-line:vertical {
-     border: 2px solid grey;
-     background: #323232;
-     height: 20px;
-     subcontrol-position: bottom;
-     subcontrol-origin: margin;
- }
+QScrollBar:vertical {
+    border: 2px solid grey;
+    background: #323232;
+    width: 15px;
+    margin: 22px 0 22px 0;
+}
+QScrollBar::handle:vertical {
+    background: #b1b1b1;
+    min-height: 3px;
+}
+QScrollBar::add-line:vertical {
+    border: 2px solid grey;
+    background: #323232;
+    height: 20px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
 
- QScrollBar::sub-line:vertical {
-     border: 2px solid grey;
-     background: #323232;
-     height: 20px;
-     subcontrol-position: top;
-     subcontrol-origin: margin;
- }
- QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
-     border: 2px solid grey;
-     width: 3px;
-     height: 3px;
-     background: white;
- }
+QScrollBar::sub-line:vertical {
+    border: 2px solid grey;
+    background: #323232;
+    height: 20px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    border: 2px solid grey;
+    width: 3px;
+    height: 3px;
+    background: white;
+}
 
  QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
      background: none;
- }
+}
 QPushButton:pressed
 {
     background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #2d2d2d, stop: 0.1 #2b2b2b, stop: 0.5 #292929, stop: 0.9 #282828, stop: 1 #252525);
