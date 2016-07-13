@@ -1,3 +1,4 @@
+import os.path
 from PyQt5 import QtCore
 from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
@@ -124,11 +125,21 @@ class ActivityGUI(Ui_q_dialog, QObject):
 
         print(self.activities[self.active_row].name+" completed")
 
-    def create_some_activities(self):
-        self.activities = [Activity("music", 30, 3, 3), Activity("mail", 0.3, 3, 3), Activity("a", 0.1, 3, 3),
-                           Activity("b", 60, 3, 3), Activity("coding", 60, 4, 5), Activity("other", 60, 4, 5),
-                           Activity("study", 180, 1, 2), Activity("food1", 20, 4, 5), Activity("food2", 30, 4, 5),
-                           Activity("duolingo", 25, 3, 3), Activity("sailing", 20, 3, 3)]
+    def create_activities(self):
+        if os.path.isfile("data.json") is False:
+            # if no json file is found, create new activities
+            self.activities = [Activity("music", 30, 3, 3), Activity("mail", 0.3, 3, 3), Activity("a", 0.1, 3, 3),
+                               Activity("b", 60, 3, 3), Activity("coding", 60, 4, 5), Activity("other", 60, 4, 5),
+                               Activity("study", 180, 1, 2), Activity("food1", 20, 4, 5), Activity("food2", 30, 4, 5),
+                               Activity("duolingo", 25, 3, 3), Activity("sailing", 20, 3, 3)]
+
+        else:
+            # else load the data from the json file
+            with open('data.json', encoding='utf-8') as data_file:
+                pickled = json.loads(data_file.read())
+                self.activities = jsonpickle.loads(pickled)
+
+
 
     # slots
     def update_progressbar(self):
@@ -143,6 +154,9 @@ class ActivityGUI(Ui_q_dialog, QObject):
 
             self.tableWidget.cellWidget(row, 1).setValue(time_left)
             self.tableWidget.cellWidget(row, 1).setFormat(self.activities[row].return_hour_minute_format())
+
+            # store current activities state to JSON file
+            self.obj_to_json()
 
         else:
             # do required actions to end the activity
@@ -185,20 +199,10 @@ class ActivityGUI(Ui_q_dialog, QObject):
         #         self.tableWidget.cellWidget(row, 1).change_color("#008000")
         #     row += 1
 
-        self.obj_to_json()
-
-        with open('data.json', encoding='utf-8') as data_file:
-            pickled = json.loads(data_file.read())
-            unpickled = jsonpickle.loads(pickled)
-
-        for activity in unpickled:
-            print(activity.__dict__)
-
     def obj_to_json(self):
-        # for activity in self.activities:
         pickled = jsonpickle.dumps(self.activities)
-        print(pickled)
 
+        # write pickled activities to json
         with open('data.json', 'w') as fp:
             # json.dump(activity, fp, default=jdefault)
             json.dump(pickled, fp)

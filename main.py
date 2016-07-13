@@ -115,7 +115,7 @@ DailySchedule.setStyleSheet(styleData)
 # initialize tableWidget
 gui = ActivityGUI()
 gui.setup(DailySchedule)
-gui.create_some_activities()
+gui.create_activities()
 gui.arrange_activities()
 
 # show the window

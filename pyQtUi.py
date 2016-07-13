@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'DailySchedule.ui'
 #
-# Created: Fri Jul  8 16:15:27 2016
+# Created: Mon Jul 11 18:35:52 2016
 #      by: PyQt5 UI code generator 5.2.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -25,12 +25,21 @@ class Ui_q_dialog(object):
         self.tableWidget.setRowCount(0)
         self.verticalLayout.addWidget(self.tableWidget)
         self.gridLayout.addLayout(self.verticalLayout, 1, 0, 1, 1)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.addButton = QtWidgets.QPushButton(q_dialog)
+        self.addButton.setObjectName("addButton")
+        self.horizontalLayout.addWidget(self.addButton)
+        self.deleteButton = QtWidgets.QPushButton(q_dialog)
+        self.deleteButton.setObjectName("deleteButton")
+        self.horizontalLayout.addWidget(self.deleteButton)
         self.resetButton = QtWidgets.QPushButton(q_dialog)
         self.resetButton.setObjectName("resetButton")
-        self.gridLayout.addWidget(self.resetButton, 2, 0, 1, 1)
-        self.testButton = QtWidgets.QPushButton(q_dialog)
-        self.testButton.setObjectName("testButton")
-        self.gridLayout.addWidget(self.testButton, 3, 0, 1, 1)
+        self.horizontalLayout.addWidget(self.resetButton)
+        self.moreButton = QtWidgets.QPushButton(q_dialog)
+        self.moreButton.setObjectName("moreButton")
+        self.horizontalLayout.addWidget(self.moreButton)
+        self.gridLayout.addLayout(self.horizontalLayout, 2, 0, 1, 1)
 
         self.retranslateUi(q_dialog)
         QtCore.QMetaObject.connectSlotsByName(q_dialog)
@@ -38,6 +47,8 @@ class Ui_q_dialog(object):
     def retranslateUi(self, q_dialog):
         _translate = QtCore.QCoreApplication.translate
         q_dialog.setWindowTitle(_translate("q_dialog", "Form"))
-        self.resetButton.setText(_translate("q_dialog", "Reset"))
-        self.testButton.setText(_translate("q_dialog", "Test"))
+        self.addButton.setText(_translate("q_dialog", "Add new"))
+        self.deleteButton.setText(_translate("q_dialog", "Delete selected"))
+        self.resetButton.setText(_translate("q_dialog", "Reset time"))
+        self.moreButton.setText(_translate("q_dialog", "About"))
 
