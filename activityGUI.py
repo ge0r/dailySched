@@ -48,6 +48,7 @@ class ActivityGUI(Ui_q_dialog, QObject):
         self.thread.time_signal.connect(self.update_progressbar)
         self.stop_thread_signal.connect(self.thread.stop)
         self.resetButton.clicked.connect(self.handle_reset_click)
+        self.deleteButton.clicked.connect(self.handle_delete_click)
 
     def arrange_activities(self):
         count = 0
@@ -123,13 +124,13 @@ class ActivityGUI(Ui_q_dialog, QObject):
         self.tableWidget.cellWidget(self.active_row, 1).change_color("#008000")
         print("stopping activity")
 
-    def end_activity(self):
+    def end_activity(self, play_song=True):
         # do the required actions to stop the progressbar activity
         self.stop_thread_signal.emit()
         self.tableWidget.cellWidget(self.active_row, 1).setFormat("Completed")
 
-        # if the user has selected it, play the alert
-        if self.play_alert is True:
+        # if the user has selected it and song is not defined False, play the alert
+        if self.play_alert is True and play_song is True:
             self.song.play()
 
         print(self.activities[self.active_row].name+" completed")
@@ -148,11 +149,39 @@ class ActivityGUI(Ui_q_dialog, QObject):
                 pickled = json.loads(data_file.read())
                 self.activities = jsonpickle.loads(pickled)
 
-            # find running activity, if there is one
+            # stop any running activities from previous session
             for activity in self.activities:
                 activity.stop_time_update()
 
+    def delete_activity(self, row):
+        running = True;
 
+        # if running activity is deleted, also end the activity
+        if row == self.active_row:
+            self.end_activity(False)
+            running = False
+
+        # delete both widget and object
+        self.tableWidget.removeRow(row)
+        del self.activities[row]
+
+        # if there is still an activity running
+        if running:
+            # find the running activity (if there is one) and update the active_row
+            for activity in self.activities:
+                if activity.is_running:
+                    self.active_row = self.activities.index(activity)
+
+        # save the changes
+        self.obj_to_json()
+
+    def obj_to_json(self):
+        pickled = jsonpickle.dumps(self.activities)
+
+        # write pickled activities to json
+        with open('data.json', 'w') as fp:
+            # json.dump(activity, fp, default=jdefault)
+            json.dump(pickled, fp)
 
     # slots
     def update_progressbar(self):
@@ -212,15 +241,17 @@ class ActivityGUI(Ui_q_dialog, QObject):
                 self.tableWidget.cellWidget(row, 1).change_color("#008000")
             row += 1
 
-    def obj_to_json(self):
-        pickled = jsonpickle.dumps(self.activities)
+        # save the changes
+        self.obj_to_json()
 
-        # write pickled activities to json
-        with open('data.json', 'w') as fp:
-            # json.dump(activity, fp, default=jdefault)
-            json.dump(pickled, fp)
+    def handle_delete_click(self):
+        for temp in self.tableWidget.selectionModel().selectedRows():
+            rows = self.tableWidget.selectionModel().selectedRows()
+            rows.sort()
+            self.delete_activity(rows[0].row())
 
 
+# the original way, without jsonpickle
 def jdefault(o):
     return o.__dict__
 
