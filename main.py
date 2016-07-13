@@ -36,7 +36,7 @@ QTableView:item{
 }
 QTableView::item:selected
 {
-    color: #e65c00;
+    color: #ff6600;
     background: #323232;
 }
 QProgressBar

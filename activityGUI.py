@@ -79,6 +79,8 @@ class ActivityGUI(Ui_q_dialog, QObject):
                 progressbar.setFormat("Completed")
             else:
                 progressbar.setFormat(str(activity.return_hour_minute_format()))
+
+                # tooltip to appear on hover
                 progressbar.setToolTip("duration: " + activity.return_hour_minute_format())
 
             self.tableWidget.setRowHeight(count, 65)
@@ -198,17 +200,17 @@ class ActivityGUI(Ui_q_dialog, QObject):
     def handle_reset_click(self):
         print("reset button clicked")
         row = 0
-        # for activity in self.activities:
-        #     # reset each activity
-        #     activity.reset()
-        #
-        #     # repaint progressbar
-        #     self.tableWidget.cellWidget(row, 1).setValue(activity.time_left)
-        #     self.tableWidget.cellWidget(row, 1).setFormat(self.activities[row].return_hour_minute_format())
-        #
-        #     if not activity.is_running:
-        #         self.tableWidget.cellWidget(row, 1).change_color("#008000")
-        #     row += 1
+        for activity in self.activities:
+            # reset each activity
+            activity.reset()
+
+            # repaint progressbar
+            self.tableWidget.cellWidget(row, 1).setValue(activity.time_left)
+            self.tableWidget.cellWidget(row, 1).setFormat(self.activities[row].return_hour_minute_format())
+
+            if not activity.is_running:
+                self.tableWidget.cellWidget(row, 1).change_color("#008000")
+            row += 1
 
     def obj_to_json(self):
         pickled = jsonpickle.dumps(self.activities)
