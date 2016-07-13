@@ -23,6 +23,8 @@ class ActivityGUI(Ui_q_dialog, QObject):
 
         self.ui = Ui_q_dialog()
         self.activities = None
+
+        # active_row is the row in the tableWidget with a progress bar currently running
         self.active_row = None
         self.thread = ThreadClass()
 
@@ -68,17 +70,22 @@ class ActivityGUI(Ui_q_dialog, QObject):
             progressbar = MyProgressBar()
             progressbar.setMaximum(activity.duration)
             progressbar.setMinimum(0)
-            progressbar.setValue(progressbar.maximum())
+            progressbar.setValue(activity.time_left)
 
             progressbar.setTextVisible(True)
-            progressbar.setFormat(str(activity.return_hour_minute_format()))
-            progressbar.setToolTip("duration: " + activity.return_hour_minute_format())
+
+            # if the activity has already been completed write completed message
+            if activity.ended is True:
+                progressbar.setFormat("Completed")
+            else:
+                progressbar.setFormat(str(activity.return_hour_minute_format()))
+                progressbar.setToolTip("duration: " + activity.return_hour_minute_format())
 
             self.tableWidget.setRowHeight(count, 65)
 
             self.tableWidget.setCellWidget(count, 1, progressbar)
 
-            self.thicken_activitybar(activity, count)
+            self.thicken_activity_bar(activity, count)
 
             count += 1
 
@@ -86,7 +93,7 @@ class ActivityGUI(Ui_q_dialog, QObject):
         self.tableWidget.horizontalHeader().setStretchLastSection(True)
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
-    def thicken_activitybar(self, activity, count):
+    def thicken_activity_bar(self, activity, count):
         # arrange row height according to initial duration
         if activity.duration <= 3600:
             print("60")
@@ -138,6 +145,10 @@ class ActivityGUI(Ui_q_dialog, QObject):
             with open('data.json', encoding='utf-8') as data_file:
                 pickled = json.loads(data_file.read())
                 self.activities = jsonpickle.loads(pickled)
+
+            # find running activity, if there is one
+            for activity in self.activities:
+                activity.stop_time_update()
 
 
 

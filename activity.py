@@ -24,6 +24,8 @@ class Activity:
         self.time_left = self.duration
         self.time_stamp = None
         self.is_running = False
+
+        # ended means the activity is now completed and won't run again
         self.ended = False
 
     # updates time left for the activity
