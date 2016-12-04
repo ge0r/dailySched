@@ -49,6 +49,8 @@ class ActivityGUI(Ui_q_dialog, QObject):
         self.stop_thread_signal.connect(self.thread.stop)
         self.resetButton.clicked.connect(self.handle_reset_click)
         self.deleteButton.clicked.connect(self.handle_delete_click)
+        self.addButton.clicked.connect(self.handle_add_new_click)
+        self.moreButton.clicked.connect(self.handle_about_click)
 
     def arrange_activities(self):
         count = 0
@@ -245,13 +247,20 @@ class ActivityGUI(Ui_q_dialog, QObject):
         self.obj_to_json()
 
     def handle_delete_click(self):
+        print("delete button clicked")
         for temp in self.tableWidget.selectionModel().selectedRows():
             rows = self.tableWidget.selectionModel().selectedRows()
             rows.sort()
             self.delete_activity(rows[0].row())
 
+    def handle_about_click(self):
+        print("about button cliked")
 
-# the original way, without jsonpickle
-def jdefault(o):
-    return o.__dict__
+    def handle_add_new_click(self):
+        print("add new button clicked")
+
+
+# # the original way, without jsonpickle
+# def jdefault(o):
+#     return o.__dict__
 
